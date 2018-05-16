@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.arrow.plasma.ObjectStoreLink;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ray.api.Ray;
 import org.ray.api.RayApi;
@@ -22,7 +24,6 @@ import org.ray.api.internal.Callable;
 import org.ray.core.model.RayParameters;
 import org.ray.spi.LocalSchedulerLink;
 import org.ray.spi.LocalSchedulerProxy;
-import org.ray.spi.ObjectStoreLink;
 import org.ray.spi.ObjectStoreProxy;
 import org.ray.spi.ObjectStoreProxy.GetStatus;
 import org.ray.spi.PathConfig;

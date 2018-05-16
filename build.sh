@@ -109,3 +109,6 @@ popd
 
 # Move stuff from Arrow to Ray.
 cp $ROOT_DIR/thirdparty/pkg/arrow/cpp/build/cpp-install/bin/plasma_store $BUILD_DIR/src/plasma/
+if [[ "$LANGUAGE" == "java" ]]; then
+cp $ROOT_DIR/thirdparty/build/arrow/cpp/build/release/libplasma_java.* $BUILD_DIR/src/plasma/
+fi

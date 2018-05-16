@@ -49,7 +49,10 @@
       <artifactId>guava</artifactId>
       <version>19.0</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.arrow</groupId>
+      <artifactId>arrow-plasma</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <finalName>ray-runtime-deploy</finalName>

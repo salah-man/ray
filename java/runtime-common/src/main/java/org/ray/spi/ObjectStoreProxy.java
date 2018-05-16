@@ -2,6 +2,10 @@ package org.ray.spi;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.arrow.plasma.ObjectId;
+import org.apache.arrow.plasma.ObjectStoreLink;
+import org.apache.arrow.plasma.ObjectBuffer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ray.api.RayList;
 import org.ray.api.RayObject;
@@ -9,7 +13,6 @@ import org.ray.api.UniqueID;
 import org.ray.api.WaitResult;
 import org.ray.core.Serializer;
 import org.ray.core.WorkerContext;
-import org.ray.spi.model.RayBuffer;
 import org.ray.util.exception.TaskExecutionException;
 
 /**
@@ -22,13 +25,15 @@ public class ObjectStoreProxy {
 
   private final ObjectStoreLink store;
 
+  private final int GET_TIMEOUT_MS = 1000;
+
   public ObjectStoreProxy(ObjectStoreLink store) {
     this.store = store;
   }
 
   public <T> Pair<T, GetStatus> get(UniqueID id, int timeout_ms, boolean isMetadata)
       throws TaskExecutionException {
-    RayBuffer obj = store.get(id, timeout_ms, isMetadata);
+    ObjectBuffer obj = store.get(id, timeout_ms, isMetadata);
     if (obj.buffer() != null) {
       T t = Serializer.decode(obj.buffer(), WorkerContext.currentClassLoader());
       obj.release();
@@ -43,14 +48,14 @@ public class ObjectStoreProxy {
 
   public <T> Pair<T, GetStatus> get(UniqueID objectId, boolean isMetadata)
       throws TaskExecutionException {
-    return get(objectId, ObjectStoreLink.GET_TIMEOUT_MS, isMetadata);
+    return get(objectId, GET_TIMEOUT_MS, isMetadata);
   }
 
   public <T> List<Pair<T, GetStatus>> get(List<UniqueID> ids, int timeoutMs, boolean isMetadata)
       throws TaskExecutionException {
-    List<RayBuffer> objs = store.get(ids, timeoutMs, isMetadata);
+    List<ObjectBuffer> objs = store.get(ids, timeoutMs, isMetadata);
     List<Pair<T, GetStatus>> ret = new ArrayList<>();
-    for (RayBuffer obj : objs) {
+    for (ObjectBuffer obj : objs) {
       if (obj.buffer() != null) {
         T t = Serializer.decode(obj.buffer(), WorkerContext.currentClassLoader());
         obj.release();
@@ -67,7 +72,7 @@ public class ObjectStoreProxy {
 
   public <T> List<Pair<T, GetStatus>> get(List<UniqueID> objectIds, boolean isMetadata)
       throws TaskExecutionException {
-    return get(objectIds, ObjectStoreLink.GET_TIMEOUT_MS, isMetadata);
+    return get(objectIds, GET_TIMEOUT_MS, isMetadata);
   }
 
   public void put(UniqueID id, Object obj, Object metadata) {
@@ -79,12 +84,10 @@ public class ObjectStoreProxy {
     for (RayObject<T> obj : waitfor.Objects()) {
       ids.add(obj.getId());
     }
-
-    List<UniqueID> readys = store.wait(ids, timeout, numReturns);
+    List<ObjectId> readys = store.wait(ids, timeout, numReturns);
 
     RayList<T> readyObjs = new RayList<>();
     RayList<T> remainObjs = new RayList<>();
-
     for (RayObject<T> obj : waitfor.Objects()) {
       if (readys.contains(obj.getId())) {
         readyObjs.add(obj);
