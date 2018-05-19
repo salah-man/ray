@@ -22,6 +22,20 @@ matrix:
 
     - os: linux
       dist: trusty
+      env: JDK='Oracle JDK 8'
+      install: [] 
+      script:
+      - ./java/test.sh
+
+    - os: osx
+      osx_image: xcode7
+      env: JDK='Oracle JDK 8'
+      install: [] 
+      script:
+      - ./java/test.sh
+
+    - os: linux
+      dist: trusty
       env: LINT=1
       before_install:
         # In case we ever want to use a different version of clang-format:
