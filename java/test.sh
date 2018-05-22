@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-../build.sh -l java
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE:-$0}")"; pwd)
+$ROOT_DIR/../build.sh -l java
 
-pushd ../thirdparty/build/arrow/java/plasma
-mvn clean install -Dmaven.test.skip
+pushd $ROOT_DIR/../thirdparty/build/arrow/java
+mvn clean install -pl plasma -am -Dmaven.test.skip
 popd
+pushd $ROOT_DIR/../java
 mvn clean install -Dmaven.test.skip
 mvn test
+popd

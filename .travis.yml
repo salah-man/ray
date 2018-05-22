@@ -22,18 +22,15 @@ matrix:
 
     - os: linux
       dist: trusty
-      env: JDK='Oracle JDK 8'
-      install: [] 
+      env:
+        - JDK='Oracle JDK 8'
+        - PYTHON=3.5
+      install:
+        - ./.travis/install-dependencies.sh
+        - export PATH="$HOME/miniconda/bin:$PATH"
       script:
       - ./java/test.sh
-
-    - os: osx
-      osx_image: xcode7
-      env: JDK='Oracle JDK 8'
-      install: [] 
-      script:
-      - ./java/test.sh
-
+      
     - os: linux
       dist: trusty
       env: LINT=1
