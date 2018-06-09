@@ -21,13 +21,13 @@ public class UIdTest {
 
   @Test
   public void test() {
-    UniqueID tid = UniqueIdHelper.nextTaskId(0xdeadbeefL);
-    UniqueIdHelper.setTest(tid, true);
-    System.out.println("Tested task id = " + tid);
+    UniqueID Tid = UniqueIdHelper.nextTaskId(0xdeadbeefL);
+    UniqueIdHelper.setTest(Tid, true);
+    System.out.println("Tested task id = " + Tid);
     RayFunc_1_1<Integer, String> f = UIdTest::hi;
     RayObject<String> result = new RayObject<>(
         RayRuntime.getInstance().call(
-            tid,
+            Tid,
             RayFunc_1_1.class,
             f,
             1, 1
